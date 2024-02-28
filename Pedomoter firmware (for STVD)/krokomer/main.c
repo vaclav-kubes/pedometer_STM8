@@ -1,5 +1,5 @@
 
-//===================== IMPORTOVANÉ KNIHOVNY ==========
+//===================== IMPORTOVANÃ‰ KNIHOVNY ==========
 #include "stm8l15x.h"
 #include "stm8l15x_gpio.h"
 #include "delay.h"
@@ -12,28 +12,28 @@
 #include "stm8l15x_clk.h"
 #include "stm8l15x_adc.h"
 
-//======================== DEKLARACE ROMÌNNİCH ============
-volatile bool stav = 0;			//pro uloení stavu ovl. tlaèítka - zají má nás hlavnì kdy se rovná nule
+//======================== DEKLARACE ROMÄšNNÃCH ============
+volatile bool stav = 0;			//pro uloÅ¾enÃ­ stavu ovl. tlaÄÃ­tka - zajÃ­ mÃ¡ nÃ¡s hlavnÄ› kdy se rovnÃ¡ nule
 volatile bool wut = 0;			//pro idikaci interruptu z wake up timeru
-volatile bool odp = 0;			//pro idikaci interruptu pøi zapnutí nebo vypnutí nabíjení bterie
-volatile bool dup = 0;			//pro idikaci interruptu z krokomìrového modulu
-volatile bool preteceni = 0;			//idikuje pøesáhnutí maximální hodnoty, která lze na LCD zobrazit
-bool vymaz = 1;			//pomocná promìnná díky které se po vymazání rekordu/poètu krokù/rozsvícení nepøepne hodnota na následující v poøadí
-bool nab_pripojeno = 0;			//nastaveno na 1 kdy je se baterie nenabíjí
-bool wut_vyp = 0;			//pomocná promnná aby se wakeup timer natavoval jenom kdy není nastaven
-bool zobrazeno0 = 0;			//tyto promìnné urèují jestli se poadovaní hodnota má zobrazit nebo ne
+volatile bool odp = 0;			//pro idikaci interruptu pÅ™i zapnutÃ­ nebo vypnutÃ­ nabÃ­jenÃ­ bterie
+volatile bool dup = 0;			//pro idikaci interruptu z krokomÄ›rovÃ©ho modulu
+volatile bool preteceni = 0;			//idikuje pÅ™esÃ¡hnutÃ­ maximÃ¡lnÃ­ hodnoty, kterÃ¡ lze na LCD zobrazit
+bool vymaz = 1;			//pomocnÃ¡ promÄ›nnÃ¡ dÃ­ky kterÃ© se po vymazÃ¡nÃ­ rekordu/poÄtu krokÅ¯/rozsvÃ­cenÃ­ nepÅ™epne hodnota na nÃ¡sledujÃ­cÃ­ v poÅ™adÃ­
+bool nab_pripojeno = 0;			//nastaveno na 1 kdyÅ¾ je se baterie nenabÃ­jÃ­
+bool wut_vyp = 0;			//pomocnÃ¡ promnnÃ¡ aby se wakeup timer natavoval jenom kdyÅ¾ nenÃ­ nastaven
+bool zobrazeno0 = 0;			//tyto promÄ›nnÃ© urÄujÃ­ jestli se poÅ¾adovanÃ­ hodnota mÃ¡ zobrazit nebo ne
 bool zobrazeno1 = 0;
 bool zobrazeno2 = 0;
 
-int8_t menu = 0;			//urèuje která hofdnota se má na LCD zobrazit
-uint16_t maxU;			//promìnné pro vıpoèet napìtí baterie
-uint16_t rozdil_max_min = 611;			//ideální rozdíl min a max napìtí baterie - hodnota pøiøazená ude slouí jako pojistka kdyby v EEPROM nebyla nastavena 
-uint16_t minU = 2429;			//ideální min hodnota napìtí baterie - hodnota pøiøazená ude slouí jako pojistka kdyby v EEPROM nebyla nastavena
+int8_t menu = 0;			//urÄuje kterÃ¡ hofdnota se mÃ¡ na LCD zobrazit
+uint16_t maxU;			//promÄ›nnÃ© pro vÃ½poÄet napÄ›tÃ­ baterie
+uint16_t rozdil_max_min = 611;			//ideÃ¡lnÃ­ rozdÃ­l min a max napÄ›tÃ­ baterie - hodnota pÅ™iÅ™azenÃ¡ ude slouÅ¾Ã­ jako pojistka kdyby v EEPROM nebyla nastavena 
+uint16_t minU = 2429;			//ideÃ¡lnÃ­ min hodnota napÄ›tÃ­ baterie - hodnota pÅ™iÅ™azenÃ¡ ude slouÅ¾Ã­ jako pojistka kdyby v EEPROM nebyla nastavena
 int32_t vzorek;
-volatile uint32_t kroky = 0;			//zde se zapisuje poèet krokù
-uint32_t rekord;			//sem se naète rekord uloenı v EEPROM
+volatile uint32_t kroky = 0;			//zde se zapisuje poÄet krokÅ¯
+uint32_t rekord;			//sem se naÄte rekord uloÅ¾enÃ½ v EEPROM
 
-//========================== DEKLARACE FUNKCÍ =============
+//========================== DEKLARACE FUNKCÃ =============
 void init_milis(void);
 void nastaveniGPIO(void);
 void nastaveniLCD (void);
@@ -50,7 +50,7 @@ void EEPROMzapis(uint32_t zapsat, uint32_t adresa);
 uint32_t EEPROMcteni(uint32_t adresa);
 uint8_t baterie (void);
 
-//========================= POLE PRO OVLÁDÁNÍ LCD ===========
+//========================= POLE PRO OVLÃDÃNÃ LCD ===========
 uint8_t cislanaseg[5];
 uint8_t posun [5] = {0,2,4,6,8};
 uint8_t celkovyvysledek [8][2] = {{0,0b00000000},{3,0b0000000},{7,0b00000000},{10,0b0000000},{1,0b00000000},{4,0b0000000},{8,0b0000000},{11,0b0000000}};
@@ -67,8 +67,8 @@ uint8_t vyber [10][4][2] =
 {{1,0b00000011},{4,0b00110000},{8,0b00000011},{11,0b00100000}},//8
 {{1,0b00000011},{4,0b00110000},{8,0b00000001},{11,0b00100000}}};//9
 
-//======================== HLAVNÍ PROGRAM =============
-void main(void)			//nastavení poívanıch preriferií, hodinového signálu a interruptù
+//======================== HLAVNÃ PROGRAM =============
+void main(void)			//nastavenÃ­ poÅ¾Ã­vanÃ½ch preriferiÃ­, hodinovÃ©ho signÃ¡lu a interruptÅ¯
 {
 	disableInterrupts();
 	nastaveniCLK();
@@ -80,24 +80,24 @@ void main(void)			//nastavení poívanıch preriferií, hodinového signálu a interr
 	GPIO_WriteBit(GPIOB, GPIO_Pin_2, RESET);
 	enableInterrupts();
 
-	if(EEPROMcteni(0x001008) != 0 && EEPROMcteni(0x001004) != 0){			//pokud má v EEPROM zapsány referenèní napìtí prourèení stavubaterie tak si je naèti a pracuj s nimi 
+	if(EEPROMcteni(0x001008) != 0 && EEPROMcteni(0x001004) != 0){			//pokud mÃ¡Å¾ v EEPROM zapsÃ¡ny referenÄnÃ­ napÄ›tÃ­ prourÄenÃ­ stavubaterie tak si je naÄti a pracuj s nimi 
 		rozdil_max_min = (uint16_t)EEPROMcteni(0x001008);
 		minU = (uint16_t)EEPROMcteni(0x001004);
 	}
 	
-  while (1){ //cyklus se provede vdy jen jednou a to kdy dojde k interruptu
-		detekce_nabijeni();			//zkontroluj jestli není pøipojena nabíjeèka
+  while (1){ //cyklus se provede vÅ¾dy jen jednou a to kdyÅ¾ dojde k interruptu
+		detekce_nabijeni();			//zkontroluj jestli nenÃ­ pÅ™ipojena nabÃ­jeÄka
 		
-		if (preteceni){			//zkontroluj jestli nedošlo k pøekroèení maximálního poèetu krokù, které dokáeme zobrazit
+		if (preteceni){			//zkontroluj jestli nedoÅ¡lo k pÅ™ekroÄenÃ­ maximÃ¡lnÃ­ho poÄetu krokÅ¯, kterÃ© dokÃ¡Å¾eme zobrazit
 			EEPROMzapis(99999, 0x001000);
 			preteceni = 0;
 		}
 		
-		if(GPIO_ReadInputDataBit(GPIOE,GPIO_Pin_6) != RESET){			//pokud je ovl. tlaèítko puštìno stav je 0 a pokud šlo o probuzení interruptem z tleèítka pohni se v menu 
+		if(GPIO_ReadInputDataBit(GPIOE,GPIO_Pin_6) != RESET){			//pokud je ovl. tlaÄÃ­tko puÅ¡tÄ›no stav je 0 a pokud Å¡lo o probuzenÃ­ interruptem z tleÄÃ­tka pohni se v menu 
 			stav = 0;
 			if(!vymaz && !dup && !wut && !odp && (TIM5_GetCounter() > 8)){
 				menu++;
-				if (menu == 3){			// kdy je menu 3 tak se vra zpìt na nulu › toèíme se v kruhu
+				if (menu == 3){			// kdyÅ¾ je menu 3 tak se vraÅ¥ zpÄ›t na nulu â€º toÄÃ­me se v kruhu
 					menu = 0;
 				}
 			}else{
@@ -105,18 +105,18 @@ void main(void)			//nastavení poívanıch preriferií, hodinového signálu a interr
 			}
 		}
 		
-		if(menu == 0){			//pokud chceme zobrazit menu 0 (aktuální poèet krokù)
-			if( TIM5_GetCounter() > 1000 && !vymaz && !dup && !wut){ //pokud drím tlaèítko, ubìhly 2s a mám povoleno vymazávání tak vyma kroky a zaka další vymazávání
-				if (EEPROMcteni(0x001000) < kroky){			//pøekonali jsme rekord? pokud ano tak ho ulo do EEPROM
+		if(menu == 0){			//pokud chceme zobrazit menu 0 (aktuÃ¡lnÃ­ poÄet krokÅ¯)
+			if( TIM5_GetCounter() > 1000 && !vymaz && !dup && !wut){ //pokud drÅ¾Ã­m tlaÄÃ­tko, ubÄ›hly 2s a mÃ¡m povoleno vymazÃ¡vÃ¡nÃ­ tak vymaÅ¾ kroky a zakaÅ¾ dalÅ¡Ã­ vymazÃ¡vÃ¡nÃ­
+				if (EEPROMcteni(0x001000) < kroky){			//pÅ™ekonali jsme rekord? pokud ano tak ho uloÅ¾ do EEPROM
 					EEPROMzapis(kroky,0x001000);
 				}
 				kroky = 0;
-				zobrazeno0 = 0;			//zobraz smazané kroky na displeji
+				zobrazeno0 = 0;			//zobraz smazanÃ© kroky na displeji
 				vymaz = 1;
-				TIM5_SetCounter(0);			//vynuluj èasovaè 
+				TIM5_SetCounter(0);			//vynuluj ÄasovaÄ 
 			}	
 			
-			if (dup || !zobrazeno0){			//udìlali jsme krok nebo nebo jsme povolili zobrazení krokù tak zobraz aktuální poèet krokù 
+			if (dup || !zobrazeno0){			//udÄ›lali jsme krok nebo nebo jsme povolili zobrazenÃ­ krokÅ¯ tak zobraz aktuÃ¡lnÃ­ poÄet krokÅ¯ 
 				cislanaLCD(kroky);
 				zobraz_na_LCD();
 				zobrazeno0 = 1;	
@@ -124,8 +124,8 @@ void main(void)			//nastavení poívanıch preriferií, hodinového signálu a interr
 			}
 			zobrazeno1 = 0;
 			
-		}else if(menu == 1){			// chceme se podívat na náš rekord
-			if(TIM5_GetCounter() > 1333 && !vymaz && !dup && !wut){			//pokd drím tlaèítko cca 4.5 sekundy tak vypa rekord
+		}else if(menu == 1){			// chceme se podÃ­vat na nÃ¡Å¡ rekord
+			if(TIM5_GetCounter() > 1333 && !vymaz && !dup && !wut){			//pokd drÅ¾Ã­m tlaÄÃ­tko cca 4.5 sekundy tak vypaÅ¾ rekord
 				EEPROMzapis(0, 0x001000);
 				vymaz = 1;
 				zobrazeno1 = 0;
@@ -140,18 +140,18 @@ void main(void)			//nastavení poívanıch preriferií, hodinového signálu a interr
 			}
 			zobrazeno2 = 0;
 		
-		}else if(menu == 2){			//chceme vidìt stav baterie
+		}else if(menu == 2){			//chceme vidÄ›t stav baterie
 			if(!zobrazeno2 || odp){			//chceme zobrazit stav baterie na displeji
-				if(!nab_pripojeno){			//baterie se nenabíjí - zobraz její procentuální stav
+				if(!nab_pripojeno){			//baterie se nenabÃ­jÃ­ - zobraz jejÃ­ procentuÃ¡lnÃ­ stav
 					cislanaLCD(baterie());
 					zobraz_na_LCD();
-				}else{			//baterie se nabíjí - zobraz pomlèka na displeji
+				}else{			//baterie se nabÃ­jÃ­ - zobraz pomlÄka na displeji
 					zobraz_pomlcky();
 				}
 				zobrazeno2 = 1;
 			}
 			
-			if(TIM5_GetCounter() > 667 && !vymaz && !dup && !wut){			//pokud drím tlaèítko cca 2 sekundy zmìò podsvícení displeje na opak aktuálního stavu
+			if(TIM5_GetCounter() > 667 && !vymaz && !dup && !wut){			//pokud drÅ¾Ã­m tlaÄÃ­tko cca 2 sekundy zmÄ›Åˆ podsvÃ­cenÃ­ displeje na opak aktuÃ¡lnÃ­ho stavu
 				GPIO_ToggleBits(GPIOB,GPIO_Pin_2);
 				vymaz = 1;
 				wut = 0;
@@ -163,14 +163,14 @@ void main(void)			//nastavení poívanıch preriferií, hodinového signálu a interr
 		odp = 0;
 		dup = 0;
 		
-		if(!stav){			//pokud není ovl. tlaèítko stisknuto pøedi do reimu spánku
+		if(!stav){			//pokud nenÃ­ ovl. tlaÄÃ­tko stisknuto pÅ™edi do reÅ¾imu spÃ¡nku
 			spanek ();
 		}
 	}
 }
 	
-//=================== INTERRUPTOVÉ RUTINY ===========
-INTERRUPT_HANDLER(EXTI7_IRQHandler,15)			//rutina pro obsluhu pøerušení z modulu krokomìru
+//=================== INTERRUPTOVÃ‰ RUTINY ===========
+INTERRUPT_HANDLER(EXTI7_IRQHandler,15)			//rutina pro obsluhu pÅ™eruÅ¡enÃ­ z modulu krokomÄ›ru
 {
 	kroky++;
 	dup = 1;
@@ -181,19 +181,19 @@ INTERRUPT_HANDLER(EXTI7_IRQHandler,15)			//rutina pro obsluhu pøerušení z modulu
 	}
 }
 
-INTERRUPT_HANDLER(EXTI6_IRQHandler,14)			//rutina pro obsluhu pøerušení z ovl. tlaèítka
+INTERRUPT_HANDLER(EXTI6_IRQHandler,14)			//rutina pro obsluhu pÅ™eruÅ¡enÃ­ z ovl. tlaÄÃ­tka
 {	
 	stav = 1;
 	EXTI_ClearITPendingBit(EXTI_IT_Pin6);
 }
 
-INTERRUPT_HANDLER(EXTI5_IRQHandler,13)			//rutina pro obsluhu pøerušení pøi nabíjení
+INTERRUPT_HANDLER(EXTI5_IRQHandler,13)			//rutina pro obsluhu pÅ™eruÅ¡enÃ­ pÅ™i nabÃ­jenÃ­
 {	
 	odp = 1;
 	EXTI_ClearITPendingBit(EXTI_IT_Pin5);
 }
 
-INTERRUPT_HANDLER(RTC_CSSLSE_IRQHandler,4)			//rutina pro obsluhu pøerušení èasovaèe probuzení
+INTERRUPT_HANDLER(RTC_CSSLSE_IRQHandler,4)			//rutina pro obsluhu pÅ™eruÅ¡enÃ­ ÄasovaÄe probuzenÃ­
 {
 	GPIO_WriteBit(GPIOB, GPIO_Pin_2, RESET);
 	wut = 1;
@@ -201,87 +201,87 @@ INTERRUPT_HANDLER(RTC_CSSLSE_IRQHandler,4)			//rutina pro obsluhu pøerušení èaso
 	//RTC_ClearFlag(RTC_FLAG_WUTF);
 }
 
-//==================== FUNKCE PRO NASTAVENÍ ============
-void nastaveniCLK(void){			//nastavení hlavního zdroje hodinového signálu
-	CLK_DeInit();			//vynuluj nastavení 
-	CLK_LSICmd(ENABLE);			//zapni vnitøní oscilátor 38 kHz
-	while(CLK_GetFlagStatus(CLK_FLAG_LSIRDY)== RESET);			//dokud není zapnut poèkej
-	CLK_SYSCLKSourceSwitchCmd(ENABLE);			//zapni pøepínání taktovacích hodin
-	CLK_SYSCLKSourceConfig(CLK_SYSCLKSource_LSI);			//zmìò taktovací hodiny na LSI
-	CLK_SYSCLKDivConfig(CLK_SYSCLKDiv_1);			//dìlièku LSI nastav ne jedna
-	while(CLK_GetFlagStatus(CLK_FLAG_SWBSY)== SET);			//dokud není vımìna taktovacích hodin dokonèena tak èekej 
-	CLK_SYSCLKSourceSwitchCmd(DISABLE);			//vypni monost zmìnit taktovací hodiny
-	CLK_HSICmd(DISABLE);			//vypni vsnitøní oscilátor 16 Mhz - moc velká spotøeba
-	CLK_HaltConfig(CLK_Halt_FastWakeup, DISABLE);			//nastav jak se chovat pøi halt modu
+//==================== FUNKCE PRO NASTAVENÃ ============
+void nastaveniCLK(void){			//nastavenÃ­ hlavnÃ­ho zdroje hodinovÃ©ho signÃ¡lu
+	CLK_DeInit();			//vynuluj nastavenÃ­ 
+	CLK_LSICmd(ENABLE);			//zapni vnitÅ™nÃ­ oscilÃ¡tor 38 kHz
+	while(CLK_GetFlagStatus(CLK_FLAG_LSIRDY)== RESET);			//dokud nenÃ­ zapnut poÄkej
+	CLK_SYSCLKSourceSwitchCmd(ENABLE);			//zapni pÅ™epÃ­nÃ¡nÃ­ taktovacÃ­ch hodin
+	CLK_SYSCLKSourceConfig(CLK_SYSCLKSource_LSI);			//zmÄ›Åˆ taktovacÃ­ hodiny na LSI
+	CLK_SYSCLKDivConfig(CLK_SYSCLKDiv_1);			//dÄ›liÄku LSI nastav ne jedna
+	while(CLK_GetFlagStatus(CLK_FLAG_SWBSY)== SET);			//dokud nenÃ­ vÃ½mÄ›na taktovacÃ­ch hodin dokonÄena tak Äekej 
+	CLK_SYSCLKSourceSwitchCmd(DISABLE);			//vypni moÅ¾nost zmÄ›nit taktovacÃ­ hodiny
+	CLK_HSICmd(DISABLE);			//vypni vsnitÅ™nÃ­ oscilÃ¡tor 16 Mhz - moc velkÃ¡ spotÅ™eba
+	CLK_HaltConfig(CLK_Halt_FastWakeup, DISABLE);			//nastav jak se chovat pÅ™i halt modu
 	CLK_HaltConfig(CLK_Halt_SlowWakeup, ENABLE);
 	}
 
-void init_milis(void){			//nastavení èasovaèe poívaného pro vıpoèet èasu
-	TIM5_DeInit();			//vynuluj nastavení èasovaèe 5
-	CLK_PeripheralClockConfig(CLK_Peripheral_TIM5, ENABLE);			//zapni pøívod taktovacího signálu do èasovaèe 5
-	TIM5_TimeBaseInit(TIM5_Prescaler_128,TIM5_CounterMode_Up, 0xffff);			//dìl pøíchozí taktovací signál 128, poèít nahoru, poèítej do 65535 (65536 taktù - zaèíná se od 0)
-	TIM5_Cmd(ENABLE);			//zapni èasovaè 5
+void init_milis(void){			//nastavenÃ­ ÄasovaÄe poÅ¾Ã­vanÃ©ho pro vÃ½poÄet Äasu
+	TIM5_DeInit();			//vynuluj nastavenÃ­ ÄasovaÄe 5
+	CLK_PeripheralClockConfig(CLK_Peripheral_TIM5, ENABLE);			//zapni pÅ™Ã­vod taktovacÃ­ho signÃ¡lu do ÄasovaÄe 5
+	TIM5_TimeBaseInit(TIM5_Prescaler_128,TIM5_CounterMode_Up, 0xffff);			//dÄ›l pÅ™Ã­chozÃ­ taktovacÃ­ signÃ¡l 128, poÄÃ­t nahoru, poÄÃ­tej do 65535 (65536 taktÅ¯ - zaÄÃ­nÃ¡ se od 0)
+	TIM5_Cmd(ENABLE);			//zapni ÄasovaÄ 5
 }
 
-void nastaveniGPIO(void){			//nastavení pinù vstupù a vıstupù
-	GPIO_DeInit(GPIOC);			//resetuj nastavení poívanıch portù
+void nastaveniGPIO(void){			//nastavenÃ­ pinÅ¯ vstupÅ¯ a vÃ½stupÅ¯
+	GPIO_DeInit(GPIOC);			//resetuj nastavenÃ­ poÅ¾Ã­vanÃ½ch portÅ¯
 	GPIO_DeInit(GPIOE);
 	GPIO_DeInit(GPIOB);
-	GPIO_Init(GPIOE, GPIO_Pin_6, GPIO_Mode_In_PU_IT);			//nastav E6 pro vstup ovl. tlaèítka
-	GPIO_Init(GPIOE, GPIO_Pin_7, GPIO_Mode_In_FL_IT);			//nastav E7 pro vstup krokomìrového modulu
+	GPIO_Init(GPIOE, GPIO_Pin_6, GPIO_Mode_In_PU_IT);			//nastav E6 pro vstup ovl. tlaÄÃ­tka
+	GPIO_Init(GPIOE, GPIO_Pin_7, GPIO_Mode_In_FL_IT);			//nastav E7 pro vstup krokomÄ›rovÃ©ho modulu
 	GPIO_Init(GPIOC, GPIO_Pin_5, GPIO_Mode_In_FL_IT);			//nastav C5 na detekci nabijeni
-	GPIO_Init(GPIOC, GPIO_Pin_7, GPIO_Mode_In_FL_No_IT);			//nastav C7 pro ètení napeti baterie
-	GPIO_Init(GPIOB, GPIO_Pin_2, GPIO_Mode_Out_PP_Low_Slow);			//nastav B2 jako vıstup pro ovládání podsvícení dispelje
+	GPIO_Init(GPIOC, GPIO_Pin_7, GPIO_Mode_In_FL_No_IT);			//nastav C7 pro ÄtenÃ­ napeti baterie
+	GPIO_Init(GPIOB, GPIO_Pin_2, GPIO_Mode_Out_PP_Low_Slow);			//nastav B2 jako vÃ½stup pro ovlÃ¡dÃ¡nÃ­ podsvÃ­cenÃ­ dispelje
 }
 
-void nastaveniLCD (void){			//nastavení LCD driveru
-	CLK_RTCClockConfig(CLK_RTCCLKSource_LSI, CLK_RTCCLKDiv_1);			//zapni RTC hodiny jejich hodinovım signálem bude LSI dìlenı 1
-	CLK_PeripheralClockConfig(CLK_Peripheral_RTC, ENABLE);			//zapni pøívod hodinového signálu do LCD driveru
-	RTC_WakeUpClockConfig(RTC_WakeUpClock_RTCCLK_Div16);			//nastav signál jsoucí do èítaèe pro automatické probuzení jako hodiny z RTC dìlené 16
-	CLK_PeripheralClockConfig(CLK_Peripheral_LCD, ENABLE);			//pøiveï hodinovı signál do LCD driveru
+void nastaveniLCD (void){			//nastavenÃ­ LCD driveru
+	CLK_RTCClockConfig(CLK_RTCCLKSource_LSI, CLK_RTCCLKDiv_1);			//zapni RTC hodiny jejichÅ¾ hodinovÃ½m signÃ¡lem bude LSI dÄ›lenÃ½ 1
+	CLK_PeripheralClockConfig(CLK_Peripheral_RTC, ENABLE);			//zapni pÅ™Ã­vod hodinovÃ©ho signÃ¡lu do LCD driveru
+	RTC_WakeUpClockConfig(RTC_WakeUpClock_RTCCLK_Div16);			//nastav signÃ¡l jsoucÃ­ do ÄÃ­taÄe pro automatickÃ© probuzenÃ­ jako hodiny z RTC dÄ›lenÃ© 16
+	CLK_PeripheralClockConfig(CLK_Peripheral_LCD, ENABLE);			//pÅ™iveÄ hodinovÃ½ signÃ¡l do LCD driveru
 	LCD_Init(LCD_Prescaler_1,LCD_Divider_16,LCD_Duty_1_4,LCD_Bias_1_3,LCD_VoltageSource_Internal);			//nastav LCD driver
-	LCD_PortMaskConfig(LCD_PortMaskRegister_0,255);			//nastav vybrané piny jako vıvody pro LCD
+	LCD_PortMaskConfig(LCD_PortMaskRegister_0,255);			//nastav vybranÃ© piny jako vÃ½vody pro LCD
 	LCD_PortMaskConfig(LCD_PortMaskRegister_1,15);
 	LCD_ContrastConfig(LCD_Contrast_Level_5);			//nastav kontrast LCD
 	LCD_Cmd(ENABLE);			//zapni LCD driver
 }
 
-void nastaveniINTERRUPTU(void){			//nastavení interruptù
-	EXTI_DeInit();			//vyma nastavvení interruptù
-	EXTI_ClearITPendingBit(EXTI_IT_Pin7);			//vyma bit signalizující interrupt na daném pinu
+void nastaveniINTERRUPTU(void){			//nastavenÃ­ interruptÅ¯
+	EXTI_DeInit();			//vymaÅ¾ nastavvenÃ­ interruptÅ¯
+	EXTI_ClearITPendingBit(EXTI_IT_Pin7);			//vymaÅ¾ bit signalizujÃ­cÃ­ interrupt na danÃ©m pinu
 	EXTI_ClearITPendingBit(EXTI_IT_Pin6);
 	EXTI_ClearITPendingBit(EXTI_IT_Pin5);
-	EXTI_SetPinSensitivity(EXTI_Pin_7,EXTI_Trigger_Rising);			//nastav kdy se generuje interrupt na daném pinu - z modulu krokmìru
-	EXTI_SetPinSensitivity(EXTI_Pin_6,EXTI_Trigger_Falling);			//z ovl. tlaèítka
+	EXTI_SetPinSensitivity(EXTI_Pin_7,EXTI_Trigger_Rising);			//nastav kdy se generuje interrupt na danÃ©m pinu - z modulu krokmÄ›ru
+	EXTI_SetPinSensitivity(EXTI_Pin_6,EXTI_Trigger_Falling);			//z ovl. tlaÄÃ­tka
 	EXTI_SetPinSensitivity(EXTI_Pin_5,EXTI_Trigger_Rising_Falling);			//interrupt z C5 - detekce nabijeni
-	ITC_SetSoftwarePriority(EXTI6_IRQn,ITC_PriorityLevel_3);			//nastav prioritu pøerušení
+	ITC_SetSoftwarePriority(EXTI6_IRQn,ITC_PriorityLevel_3);			//nastav prioritu pÅ™eruÅ¡enÃ­
 	ITC_SetSoftwarePriority(EXTI5_IRQn,ITC_PriorityLevel_3);
 	ITC_SetSoftwarePriority(EXTI7_IRQn,ITC_PriorityLevel_1);
 }
 
-void nastaveniADC(void){			//nastavení ADC pøevodníku
-	ADC_DeInit(ADC1);			//vyma nastavení ADC pøeodníku
-	ADC_Init(ADC1, ADC_ConversionMode_Single, ADC_Resolution_12Bit, ADC_Prescaler_2);			//nastav jak bude ADC fungovt: vezme pouze jeden vzorek, rozlišení 12 b frekvence vzorkoání je taktovací signál /2
-	ADC_SchmittTriggerConfig(ADC1,ADC_Channel_3,DISABLE);			//vypni schmittuv pøepínaè na pinu 7
-	ADC_SamplingTimeConfig(ADC1,ADC_Group_SlowChannels, ADC_SamplingTime_4Cycles);			//nastavení èasu pro oedbírání jednoho vzorku
+void nastaveniADC(void){			//nastavenÃ­ ADC pÅ™evodnÃ­ku
+	ADC_DeInit(ADC1);			//vymaÅ¾ nastavenÃ­ ADC pÅ™eodnÃ­ku
+	ADC_Init(ADC1, ADC_ConversionMode_Single, ADC_Resolution_12Bit, ADC_Prescaler_2);			//nastav jak bude ADC fungovt: vezme pouze jeden vzorek, rozliÅ¡enÃ­ 12 b frekvence vzorkoÃ¡nÃ­ je taktovacÃ­ signÃ¡l /2
+	ADC_SchmittTriggerConfig(ADC1,ADC_Channel_3,DISABLE);			//vypni schmittuv pÅ™epÃ­naÄ na pinu 7
+	ADC_SamplingTimeConfig(ADC1,ADC_Group_SlowChannels, ADC_SamplingTime_4Cycles);			//nastavenÃ­ Äasu pro oedbÃ­rÃ¡nÃ­ jednoho vzorku
 }
 
-//======================= OSTATNÍ FUNKCE =============
-void ADC (bool stav){			//zapnutí a pøipravení ADC na pøevod (to vše kvùli spotøebì)
-	if (stav){			//kdy bylo ovl. tlaèítko stisknuto
-		CLK_HSICmd(ENABLE);			//nastav taktovací signál z LSI oscilátoru na HSI protoe LSI je pro ADC pøíliš pomalı (min f ADC kolme 400 kHz)
+//======================= OSTATNÃ FUNKCE =============
+void ADC (bool stav){			//zapnutÃ­ a pÅ™ipravenÃ­ ADC na pÅ™evod (to vÅ¡e kvÅ¯li spotÅ™ebÄ›)
+	if (stav){			//kdyÅ¾ bylo ovl. tlaÄÃ­tko stisknuto
+		CLK_HSICmd(ENABLE);			//nastav taktovacÃ­ signÃ¡l z LSI oscilÃ¡toru na HSI protoÅ¾e LSI je pro ADC pÅ™Ã­liÅ¡ pomalÃ½ (min f ADC kolme 400 kHz)
 		while(CLK_GetFlagStatus(CLK_FLAG_HSIRDY)== RESET);
 		CLK_SYSCLKSourceSwitchCmd(ENABLE);
 		CLK_SYSCLKSourceConfig(CLK_SYSCLKSource_HSI);
 		CLK_SYSCLKDivConfig(CLK_SYSCLKDiv_16);
 		while(CLK_GetFlagStatus(CLK_FLAG_SWBSY)== SET);
 		CLK_SYSCLKSourceSwitchCmd(DISABLE);
-		CLK_PeripheralClockConfig(CLK_Peripheral_ADC1, ENABLE);			//spuštìní ADC
+		CLK_PeripheralClockConfig(CLK_Peripheral_ADC1, ENABLE);			//spuÅ¡tÄ›nÃ­ ADC
 		ADC_Cmd(ADC1, ENABLE);
 		ADC_ChannelCmd(ADC1,ADC_Channel_3, ENABLE);
 		_delay_us(7);
 	}else{
-		while(CLK_GetFlagStatus(CLK_FLAG_LSIRDY)== RESET);			//nastav taktovací signál zpìt
+		while(CLK_GetFlagStatus(CLK_FLAG_LSIRDY)== RESET);			//nastav taktovacÃ­ signÃ¡l zpÄ›t
 		CLK_SYSCLKSourceSwitchCmd(ENABLE);
 		CLK_SYSCLKSourceConfig(CLK_SYSCLKSource_LSI);
 		CLK_SYSCLKDivConfig(CLK_SYSCLKDiv_1);
@@ -294,11 +294,11 @@ void ADC (bool stav){			//zapnutí a pøipravení ADC na pøevod (to vše kvùli spotø
 	}
 }
 
-void cislanaLCD (uint32_t cislo){			//pøíprava èísel na zobrazení na LCD
+void cislanaLCD (uint32_t cislo){			//pÅ™Ã­prava ÄÃ­sel na zobrazenÃ­ na LCD
 	uint8_t i;
 	uint16_t delitel= 10000;
 	
-	for (i = 0; i != 5; i++){			//rozdìlí èíslo na jednoky desítky stovky...
+	for (i = 0; i != 5; i++){			//rozdÄ›lÃ­ ÄÃ­slo na jednoky desÃ­tky stovky...
 		if (cislo < 100000){
 			cislanaseg[i] = cislo/delitel;
 			cislo = cislo % delitel;
@@ -307,7 +307,7 @@ void cislanaLCD (uint32_t cislo){			//pøíprava èísel na zobrazení na LCD
 	}
 }
 
-void zobraz_na_LCD(void){			//zobrazení èísel na LCD
+void zobraz_na_LCD(void){			//zobrazenÃ­ ÄÃ­sel na LCD
 	uint8_t i;
 	uint8_t x;
 	uint8_t y;
@@ -318,9 +318,9 @@ void zobraz_na_LCD(void){			//zobrazení èísel na LCD
 	uint8_t celkovyvysledek [8][2] = {{1,0b00000000},{4,0b0000000},{8,0b0000000},{11,0b0000000},{0,0b00000000},{3,0b0000000},{7,0b00000000},{10,0b0000000}};
 	bool nezobrazovat = 0;
 	
-	for (i = 0; i != 5; i++){			//cyklus pro zpracování 5 èísel
+	for (i = 0; i != 5; i++){			//cyklus pro zpracovÃ¡nÃ­ 5 ÄÃ­sel
 		
-		if (cislanaseg[0] == 0 && cislanaseg[1] == 0 && cislanaseg[2] == 0 && cislanaseg[3] == 0 && cislanaseg[4] == 0){			//ošetøení pro zobrazování nul
+		if (cislanaseg[0] == 0 && cislanaseg[1] == 0 && cislanaseg[2] == 0 && cislanaseg[3] == 0 && cislanaseg[4] == 0){			//oÅ¡etÅ™enÃ­ pro zobrazovÃ¡nÃ­ nul
 			celkovyvysledek[4][1] = 0b00000011;
 			celkovyvysledek[5][1] = 0b00100000;
 			celkovyvysledek[6][1] = 0b00000011;
@@ -332,12 +332,12 @@ void zobraz_na_LCD(void){			//zobrazení èísel na LCD
 			nezobrazovat = 1;
 		}
 		
-		for (x = 0; x != 4; x++){			//kadé jedno èíslo je zapisováno pomocí 4 registrù protoe máme 4 comy
+		for (x = 0; x != 4; x++){			//kaÅ¾dÃ© jedno ÄÃ­slo je zapisovÃ¡no pomocÃ­ 4 registrÅ¯ protoÅ¾e mÃ¡me 4 comy
 			
-			posunute = vyber[cislanaseg[i]][x][1];			//vezme pøedpis daneého èísla pro první pozici na displeji a podle pozice právì zpracovávaného èísla ji posune tak aby se zprávnì zobrazovaly na øádech jednotek desítek stovek...
+			posunute = vyber[cislanaseg[i]][x][1];			//vezme pÅ™edpis daneÃ©ho ÄÃ­sla pro prvnÃ­ pozici na displeji a podle pozice prÃ¡vÄ› zpracovÃ¡vanÃ©ho ÄÃ­sla ji posune tak aby se zprÃ¡vnÄ› zobrazovaly na Å™Ã¡dech jednotek desÃ­tek stovek...
 			pomoc = posunute;
 			
-			while (pomoc){			//zajištìní správnosti bitová rotace
+			while (pomoc){			//zajiÅ¡tÄ›nÃ­ sprÃ¡vnosti bitovÃ¡ rotace
 				pomoc &= (pomoc -1);
 				pocetpred1 ++;
 			}
@@ -349,9 +349,9 @@ void zobraz_na_LCD(void){			//zobrazení èísel na LCD
 				pocetpo1 ++;
 			}
 			
-			posunute =  posunute >> posun[i] | posunute << 8u-posun[i];			//bitová rotace
+			posunute =  posunute >> posun[i] | posunute << 8u-posun[i];			//bitovÃ¡ rotace
 			
-			if (pocetpred1 == pocetpo1){			//úprava pro zápis do registrù
+			if (pocetpred1 == pocetpo1){			//Ãºprava pro zÃ¡pis do registrÅ¯
 				vysledek[x][0] = vyber[cislanaseg[i]][x][0];
 				vysledek[x][1] = posunute;
 			}else if (pocetpo1 == 0){
@@ -367,13 +367,13 @@ void zobraz_na_LCD(void){			//zobrazení èísel na LCD
 			pocetpo1 = 0;
 			pomoc = 0;
 		}
-			for (y = 0; y != 8; y++){			//uloení mezivısledku
+			for (y = 0; y != 8; y++){			//uloÅ¾enÃ­ mezivÃ½sledku
 			celkovyvysledek[y][1] = celkovyvysledek[y][1] | vysledek[y][1];
 			vysledek[y][0] = 0;
 			vysledek[y][1] = 0;
 		}
 	}
-	LCD_ClearFlag();			//ukládáí dat do jednotlivıch registrù
+	LCD_ClearFlag();			//uklÃ¡dÃ¡Ã­ dat do jednotlivÃ½ch registrÅ¯
 	while(LCD_GetFlagStatus() == RESET);
 	LCD_WriteRAM(LCD_RAMRegister_1, celkovyvysledek[0][1]);
 	
@@ -407,8 +407,8 @@ void zobraz_na_LCD(void){			//zobrazení èísel na LCD
 	
 }
 
-void zobraz_pomlcky(void){			//zobrazení pomlèek na LCD
-	LCD_WriteRAM(LCD_RAMRegister_8, 0);			//ulo do LCD registrù data pro zobrazení pomlèek
+void zobraz_pomlcky(void){			//zobrazenÃ­ pomlÄek na LCD
+	LCD_WriteRAM(LCD_RAMRegister_8, 0);			//uloÅ¾ do LCD registrÅ¯ data pro zobrazenÃ­ pomlÄek
 	LCD_WriteRAM(LCD_RAMRegister_0, 0 );
 	LCD_WriteRAM(LCD_RAMRegister_1, 0 );
 	LCD_WriteRAM(LCD_RAMRegister_3, 0b01010000 );
@@ -419,10 +419,10 @@ void zobraz_pomlcky(void){			//zobrazení pomlèek na LCD
 	LCD_WriteRAM(LCD_RAMRegister_11, 0 );
 }
 
-void EEPROMzapis(uint32_t zapsat,uint32_t adresa){			//ukládání do EEPROM
-	FLASH_Unlock(FLASH_MemType_Data);			//odemkni zabezpeèenou EEPROM
-	while(FLASH_GetFlagStatus(FLASH_FLAG_DUL)== RESET);			//dokud není pøipravená èekej
-	if(sizeof(zapsat) > 1){			//na základì dané adresy zapiš bu jeden Byte nebo celé slovo (4 B)
+void EEPROMzapis(uint32_t zapsat,uint32_t adresa){			//uklÃ¡dÃ¡nÃ­ do EEPROM
+	FLASH_Unlock(FLASH_MemType_Data);			//odemkni zabezpeÄenou EEPROM
+	while(FLASH_GetFlagStatus(FLASH_FLAG_DUL)== RESET);			//dokud nenÃ­ pÅ™ipravenÃ¡ Äekej
+	if(sizeof(zapsat) > 1){			//na zÃ¡kladÄ› danÃ© adresy zapiÅ¡ buÅ¥ jeden Byte nebo celÃ© slovo (4 B)
 		FLASH_ProgramWord(adresa, zapsat);
 	}else{
 		uint8_t zapsat = (uint8_t)zapsat;
@@ -432,34 +432,34 @@ void EEPROMzapis(uint32_t zapsat,uint32_t adresa){			//ukládání do EEPROM
 	FLASH_Lock(FLASH_MemType_Data);			//zamkli EEPROM
 }
 
-uint32_t EEPROMcteni(uint32_t adresa){			// ètení z EEPROM
+uint32_t EEPROMcteni(uint32_t adresa){			// ÄtenÃ­ z EEPROM
 	uint32_t precteno = 0;	
 	uint8_t byte = 0;
 	int8_t i;
 	FLASH_Unlock(FLASH_MemType_Data);			//odemkni EEPROM
-	while(FLASH_GetFlagStatus(FLASH_FLAG_DUL)== RESET);		//dokud není pøipravená èekej
+	while(FLASH_GetFlagStatus(FLASH_FLAG_DUL)== RESET);		//dokud nenÃ­ pÅ™ipravenÃ¡ Äekej
 
-	for (i=4; i>0; i--){			//umíme èíst jenom po Bytu ne po slovech proto poijeme cyklus
+	for (i=4; i>0; i--){			//umÃ­me ÄÃ­st jenom po Bytu ne po slovech proto poÅ¾ijeme cyklus
 		byte = FLASH_ReadByte(adresa);
 		precteno = precteno | (byte<<((i-1)*8));
 		adresa++;
 	}
-	FLASH_Lock(FLASH_MemType_Data);			//zamèi EEPROM
-	return precteno;			//hodnotou to funkce je pøeètená hodnota
+	FLASH_Lock(FLASH_MemType_Data);			//zamÄi EEPROM
+	return precteno;			//hodnotou to funkce je pÅ™eÄtenÃ¡ hodnota
 }
 
-uint8_t baterie (void){			//zjištìní stavu baterie
+uint8_t baterie (void){			//zjiÅ¡tÄ›nÃ­ stavu baterie
 	uint8_t i;
-	ADC(1);			//zapni a pøiprav ADC
-	for (i = 0; i < 3; i++){			//vezmi tøetí vzorek - pár vzorkù trvá ne se hodnota ustálí
-		ADC_SoftwareStartConv(ADC1);			//zaèni pøevod
-		while(ADC_GetFlagStatus(ADC1,ADC_FLAG_EOC) == RESET);			//dokud není vzorek zpracován èekej
-		vzorek =  ADC_GetConversionValue(ADC1);			//získej pøevedenou hodnotu
-		ADC_ClearFlag(ADC1, ADC_FLAG_EOC);			//pøevod ukonèen
+	ADC(1);			//zapni a pÅ™iprav ADC
+	for (i = 0; i < 3; i++){			//vezmi tÅ™etÃ­ vzorek - pÃ¡r vzorkÅ¯ trvÃ¡ neÅ¾ se hodnota ustÃ¡lÃ­
+		ADC_SoftwareStartConv(ADC1);			//zaÄni pÅ™evod
+		while(ADC_GetFlagStatus(ADC1,ADC_FLAG_EOC) == RESET);			//dokud nenÃ­ vzorek zpracovÃ¡n Äekej
+		vzorek =  ADC_GetConversionValue(ADC1);			//zÃ­skej pÅ™evedenou hodnotu
+		ADC_ClearFlag(ADC1, ADC_FLAG_EOC);			//pÅ™evod ukonÄen
 	}
 	ADC(0);			//vypni ADC
-							//pøepoèet napìtí baterie na procentuální stav naterie
-	vzorek = vzorek - minU;		//rozpìtí se musí pohybovat od 3.4V (- baterie vybita) a po 4.2V (plnì nabita) jinak by se procenta poèítala z celéo rozsahu 0 - 4.2
+							//pÅ™epoÄet napÄ›tÃ­ baterie na procentuÃ¡lnÃ­ stav naterie
+	vzorek = vzorek - minU;		//rozpÄ›tÃ­ se musÃ­ pohybovat od 3.4V (- baterie vybita) aÅ¾ po 4.2V (plnÄ› nabita) jinak by se procenta poÄÃ­tala z celÃ©o rozsahu 0 - 4.2
 	if (vzorek <= 0){
 		vzorek = 0;
 	}else if(vzorek > rozdil_max_min){
@@ -470,12 +470,12 @@ uint8_t baterie (void){			//zjištìní stavu baterie
 			vzorek = 100;
 		}
 	}
-	return vzorek;			//funkce nabıvá procentuální hodnoty napìtí baterie
+	return vzorek;			//funkce nabÃ½vÃ¡ procentuÃ¡lnÃ­ hodnoty napÄ›tÃ­ baterie
 }
 
-void detekce_nabijeni (void){			//nabíjí se baterie?
-	if(GPIO_ReadInputDataBit(GPIOC,GPIO_Pin_5)!= RESET){			//baterie se nenabíjí
-		if(nab_pripojeno){			//pokud se pøed chvílí nabíjela odeber vozrek napìtí a ulo ho jako referenèní hodnotu do EEPROM
+void detekce_nabijeni (void){			//nabÃ­jÃ­ se baterie?
+	if(GPIO_ReadInputDataBit(GPIOC,GPIO_Pin_5)!= RESET){			//baterie se nenabÃ­jÃ­
+		if(nab_pripojeno){			//pokud se pÅ™ed chvÃ­lÃ­ nabÃ­jela odeber vozrek napÄ›tÃ­ a uloÅ¾ ho jako referenÄnÃ­ hodnotu do EEPROM
 			uint8_t i;
 			ADC(1);
 			for(i = 0; i < 3; i++){
@@ -501,11 +501,11 @@ void detekce_nabijeni (void){			//nabíjí se baterie?
 	}
 }
 
-void spanek (void){			//potøebné pøípravy na spánek a samotnı spánek
-	if(GPIO_ReadOutputDataBit(GPIOB, GPIO_Pin_2) == 4 && !wut){			//pokud je podsvícení displeje zapnurto 
-			RTC_SetWakeUpCounter(23750);			//nastav èas vypnutí na 10 skund
+void spanek (void){			//potÅ™ebnÃ© pÅ™Ã­pravy na spÃ¡nek a samotnÃ½ spÃ¡nek
+	if(GPIO_ReadOutputDataBit(GPIOB, GPIO_Pin_2) == 4 && !wut){			//pokud je podsvÃ­cenÃ­ displeje zapnurto 
+			RTC_SetWakeUpCounter(23750);			//nastav Äas vypnutÃ­ na 10 skund
 			RTC_WakeUpCmd(ENABLE);
-			RTC_ITConfig(RTC_IT_WUT, ENABLE);			//vypnutí podsvícení se provede v rutinì interruptu
+			RTC_ITConfig(RTC_IT_WUT, ENABLE);			//vypnutÃ­ podsvÃ­cenÃ­ se provede v rutinÄ› interruptu
 			wut_vyp = 0;
 		}else if(!wut_vyp){
 			wut = 0;
@@ -514,9 +514,9 @@ void spanek (void){			//potøebné pøípravy na spánek a samotnı spánek
 			RTC_WakeUpCmd(DISABLE);
 		}
 		vymaz = 0;
-		TIM5_Cmd(DISABLE);			//vypni èasovaè 5
+		TIM5_Cmd(DISABLE);			//vypni ÄasovaÄ 5
 		halt();			//zastav CPU
-		TIM5_SetCounter(0);			//pokud dojde k interruptu probuï se a zaèni poèíta v èasovaèi 5 od 0
+		TIM5_SetCounter(0);			//pokud dojde k interruptu probuÄ se a zaÄni poÄÃ­ta v ÄasovaÄi 5 od 0
 		TIM5_Cmd(ENABLE);
 	}
 	
@@ -548,4 +548,3 @@ void assert_failed(uint8_t* file, uint32_t line)
   * @}
   */
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
